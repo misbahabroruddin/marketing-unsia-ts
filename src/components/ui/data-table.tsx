@@ -1,0 +1,164 @@
+"use client";
+
+import {
+  ColumnDef,
+  SortingState,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Pagination } from "@/components/react-pagination";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { Skeleton } from "./skeleton";
+
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[] | any;
+  pageCount: number;
+  pagination: React.ComponentState;
+  setPagination: React.ComponentState;
+  total: number;
+  isLoading?: boolean;
+}
+
+interface PageChangeEvent {
+  selected: number;
+}
+
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+  pageCount,
+  pagination,
+  setPagination,
+  total,
+  isLoading,
+}: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const table = useReactTable({
+    data: data ? data : [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
+    rowCount: total,
+    pageCount: pageCount || 0,
+    manualPagination: true,
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      pagination,
+      sorting,
+    },
+  });
+
+  const handlePageChange = (e: PageChangeEvent) => {
+    table.setPageIndex(e.selected);
+  };
+
+  return (
+    <>
+      <div className="overflow-hidden rounded-lg border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header, index) => {
+                  return (
+                    <TableHead
+                      key={`${header.id}-${index}`}
+                      className={cn(
+                        "bg-blue-05 text-white last:!w-36",
+                        index === 0 && "rounded-tl-lg",
+                        index === headerGroup.headers.length - 1 &&
+                          "rounded-tr-lg",
+                      )}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              Array.from({ length: columns.length }).map((_, index) => (
+                <TableRow key={index}>
+                  {columns.map((item) => (
+                    <TableCell key={item.id} className="h-4 text-center">
+                      <Skeleton className="h-5 w-full" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className="even:bg-[#F4F3FF]"
+                >
+                  {row.getVisibleCells().map((cell, index) => (
+                    <TableCell key={`${cell}-${index}`}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  Tidak ada data
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      <div className="mt-2 flex items-center justify-between">
+        {data.length ? (
+          <>
+            <div className="flex gap-2 text-primary">
+              <p>Data</p>
+              <p>{data?.to || 1}</p>
+              <p>of</p>
+              <p>{total}</p>
+            </div>
+            {pageCount > 1 && (
+              <Pagination
+                pageCount={pageCount}
+                pageOffset={pagination.pageIndex}
+                onPageChange={handlePageChange}
+              />
+            )}
+          </>
+        ) : null}
+      </div>
+    </>
+  );
+}
