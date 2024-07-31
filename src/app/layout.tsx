@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { metadataConfig } from "@/config/metadata";
 import { SidebarProvider } from "@/lib/hooks/use-sidebar";
+import { Toaster } from "@/components/ui/toaster";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -18,8 +19,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={montserrat.className}>
+      <body className={montserrat.className} suppressHydrationWarning={true}>
         <SidebarProvider>{children}</SidebarProvider>
+        <Toaster />
       </body>
     </html>
   );
