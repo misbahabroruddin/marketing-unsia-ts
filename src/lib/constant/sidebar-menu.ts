@@ -20,13 +20,13 @@ export const sidebarMenu: SidebarMenu[] = [
     link: "/dashboard",
   },
   {
-    label: "Link",
+    label: "Tautan",
     icon: "/icons/link.svg",
     iconDark: "/icons/link-dark.svg",
-    link: "/link",
+    link: "/tautan",
   },
   {
-    label: "Peminat",
+    label: "Data Leads",
     icon: "/icons/peminat.svg",
     iconDark: "/icons/peminat-dark.svg",
     link: "/peminat",

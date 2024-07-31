@@ -2,15 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname, useSelectedLayoutSegments } from "next/navigation";
+import Image from "next/image";
 
 import { UnsiaLogoWithText } from "./svgs/unsia-logo-text";
 import { cn } from "@/lib/utils";
-import ChevronLeft from "./svgs/chevron-left";
+import { ChevronLeftIcon } from "./svgs/chevron-left";
 import { useSidebar } from "@/lib/hooks/use-sidebar";
 import { UnsiaLogoSquare } from "./svgs/unsia-logo-square";
 import { sidebarMenu } from "@/lib/constant/sidebar-menu";
-import Image from "next/image";
-import { usePathname, useSelectedLayoutSegments } from "next/navigation";
 import {
   Tooltip,
   TooltipContent,
@@ -32,13 +32,7 @@ export const Sidebar = () => {
         isSidebarExpand ? "w-64" : "w-[72px]",
       )}
     >
-      <div className="flex w-full flex-col items-center gap-4 p-4 transition-all">
-        <Link href="/dashboard">
-          {isSidebarExpand ? <UnsiaLogoWithText /> : <UnsiaLogoSquare />}
-        </Link>
-        <hr className="w-full" />
-      </div>
-      <div className="relative flex w-full flex-col items-center justify-center px-3">
+      <div className="relative mt-20 flex w-full flex-col items-center justify-center px-3">
         <button
           className={cn(
             "absolute -right-5 bottom-10 grid h-10 w-10 place-items-center rounded-full border-[2px] border-blue-05 bg-white",
@@ -48,7 +42,7 @@ export const Sidebar = () => {
           onMouseLeave={() => setIsHover(false)}
           onClick={toggleSidebar}
         >
-          <ChevronLeft
+          <ChevronLeftIcon
             color={isHover ? "white" : "#10487A"}
             className={cn(
               "transition-all",
@@ -70,7 +64,7 @@ export const Sidebar = () => {
                     <li className="transition-transform">
                       <Link
                         href={menu.link}
-                        className={`hover:bg-sky-03 flex items-center gap-2 rounded-lg p-2 text-white ${
+                        className={`flex items-center gap-2 rounded-lg p-2 text-white hover:bg-sky-03 ${
                           page.includes(menu.link?.slice(1)) ||
                           pathname === menu.link
                             ? "bg-sky-03"
