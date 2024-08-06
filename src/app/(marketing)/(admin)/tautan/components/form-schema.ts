@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 export const FormSchema = z.object({
-  program: z.string({
+  program_id: z.string({
     required_error: "Harus pilih program",
   }),
-  instansi: z
+  nama_instansi: z
     .string({
       required_error: "Harus diisi",
     })
@@ -32,7 +32,7 @@ export const FormSchema = z.object({
     .min(1, {
       message: "Harus diisi",
     }),
-  nama_pic_pt: z
+  nama_pic_instansi: z
     .string({
       required_error: "Harus diisi",
     })
@@ -42,8 +42,8 @@ export const FormSchema = z.object({
   tanggal_mulai: z.date({
     required_error: "Harus diisi",
   }),
-  tanggal_selesai: z.date({
+  tanggal_berakhir: z.date({
     required_error: "Harus diisi",
   }),
-  link: z.string(),
+  link: z.string().optional(),
 });

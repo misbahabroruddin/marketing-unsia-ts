@@ -10,29 +10,28 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { ModalDetailTautan } from "./modal-detail";
 import { DownloadIcon } from "@/components/svgs/download";
-
-type Link = {
-  id: string;
-  nama: string;
-  tanggal_dibuat: Date;
-  tanggal_selesai: Date;
-  program: "sekolah" | "kerjasama";
-  status: "aktif" | "nonaktif";
-};
+import { useQueryParamsTautan } from "@/lib/hooks/use-query-params-tautan";
+import { convertDate } from "@/lib/utils/convert-date";
 
 export const useColumnTable = () => {
   const { toast } = useToast();
+  const {
+    setSortbyProgramId,
+    setSortbyNamaKegiatan,
+    setSortbyTanggalMulai,
+    setSortbyTanggalBerakhir,
+  } = useQueryParamsTautan();
 
-  const columns: ColumnDef<Link>[] = [
+  const columns: ColumnDef<Tautan>[] = [
     {
       accessorKey: "id",
       header: () => <div className="text-center">No</div>,
-      cell: ({ row, table }) => {
+      cell: ({ row }) => {
         return <div className="text-center">{row.index + 1}</div>;
       },
     },
     {
-      accessorKey: "nama",
+      accessorKey: "nama_kegiatan",
       header: ({ column }) => {
         return (
           <div className="flex justify-center">
@@ -40,6 +39,7 @@ export const useColumnTable = () => {
               className="flex gap-1"
               onClick={() => {
                 column.toggleSorting(column.getIsSorted() === "asc");
+                setSortbyNamaKegiatan(column.getIsSorted() as string);
               }}
             >
               Nama Program
@@ -57,11 +57,11 @@ export const useColumnTable = () => {
         );
       },
       cell: ({ row }) => (
-        <div className="text-center">{row.getValue("nama")}</div>
+        <div className="text-center">{row.getValue("nama_kegiatan")}</div>
       ),
     },
     {
-      accessorKey: "tanggal_dibuat",
+      accessorKey: "tanggal_mulai",
       header: ({ column }) => {
         return (
           <div className="flex justify-center">
@@ -69,6 +69,7 @@ export const useColumnTable = () => {
               className="flex gap-1"
               onClick={() => {
                 column.toggleSorting(column.getIsSorted() === "asc");
+                setSortbyTanggalMulai(column.getIsSorted() as string);
               }}
             >
               Tanggal Dibuat
@@ -86,11 +87,13 @@ export const useColumnTable = () => {
         );
       },
       cell: ({ row }) => (
-        <div className="text-center">{row.getValue("tanggal_dibuat")}</div>
+        <div className="text-center">
+          {convertDate(row?.original?.tanggal_mulai)}
+        </div>
       ),
     },
     {
-      accessorKey: "tanggal_selesai",
+      accessorKey: "tanggal_berakhir",
       header: ({ column }) => {
         return (
           <div className="flex justify-center">
@@ -98,6 +101,7 @@ export const useColumnTable = () => {
               className="flex gap-1"
               onClick={() => {
                 column.toggleSorting(column.getIsSorted() === "asc");
+                setSortbyTanggalBerakhir(column.getIsSorted() as string);
               }}
             >
               Tanggal Selesai
@@ -115,11 +119,13 @@ export const useColumnTable = () => {
         );
       },
       cell: ({ row }) => (
-        <div className="text-center">{row.getValue("tanggal_selesai")}</div>
+        <div className="text-center">
+          {convertDate(row?.original?.tanggal_berakhir)}
+        </div>
       ),
     },
     {
-      accessorKey: "program",
+      accessorKey: "program.nama",
       header: ({ column }) => {
         return (
           <div className="flex justify-center">
@@ -127,6 +133,7 @@ export const useColumnTable = () => {
               className="flex gap-1"
               onClick={() => {
                 column.toggleSorting(column.getIsSorted() === "asc");
+                setSortbyProgramId(column.getIsSorted() as string);
               }}
             >
               Program
@@ -144,7 +151,7 @@ export const useColumnTable = () => {
         );
       },
       cell: ({ row }) => (
-        <div className="text-center">{row.getValue("program")}</div>
+        <div className="text-center">{row?.original?.program?.nama!}</div>
       ),
     },
     {
@@ -157,14 +164,14 @@ export const useColumnTable = () => {
             <Button
               className={cn(
                 "px-4 py-1 text-center disabled:opacity-100",
-                status === "aktif"
+                status === 1
                   ? "bg-[#0BD72C] disabled:bg-[#0BD72C]"
                   : "bg-[#D14646] disabled:bg-[#D14646]",
               )}
               size={"sm"}
               disabled
             >
-              {row.getValue("status")}
+              {row.getValue("status") === 1 ? "Aktif" : "Nonaktif"}
             </Button>
           </div>
         );
@@ -175,16 +182,16 @@ export const useColumnTable = () => {
       header: () => <div className="text-center">Action</div>,
       cell: ({ row }) => (
         <div className="flex items-center justify-center gap-1">
-          <button onClick={() => alert(row.original.id)} title="Ubah">
-            <EditIcon />
-          </button>
-          <ModalDetailTautan />
+          <ModalDetailTautan tautanId={row.original.id} isDetail={false} />
+          <ModalDetailTautan tautanId={row.original.id} />
           <button
             onClick={() => {
               toast({
                 description: "Berhasil disalin",
               });
-              navigator.clipboard.writeText(row.original.id);
+              navigator.clipboard.writeText(
+                `${process.env.NEXT_PUBLIC_APP_URL}/presensi?code=${row.original.id}`,
+              );
             }}
             title="Salin"
           >

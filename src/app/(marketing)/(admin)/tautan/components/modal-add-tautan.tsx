@@ -45,42 +45,49 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { XIcon } from "@/components/svgs/x";
 import { SaveIcon } from "@/components/svgs/save";
 import { validationErrorClass } from "@/lib/constant/error-class";
+import { useCreateTautan } from "@/handlers/tautan/create-data";
+import { Spinner } from "@/components/ui/spinner";
 
 export const ModalAddTautan = () => {
+  const [openModal, setIsOpenModal] = useState(false);
   const [isStartDateOpen, setIsStartDateOpen] = useState(false);
   const [isEndDateOpen, setIsEndDateOpen] = useState(false);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
+      program_id: "",
       nama_kegiatan: "",
-      instansi: "",
+      nama_instansi: "",
       alamat: "",
       nama_pic: "",
-      nama_pic_pt: "",
+      nama_pic_instansi: "",
       tanggal_mulai: new Date(),
     },
   });
 
   const {
-    program,
+    program_id,
     nama_kegiatan,
     alamat,
     nama_pic,
-    nama_pic_pt,
-    instansi,
+    nama_pic_instansi,
+    nama_instansi,
     tanggal_mulai,
-    tanggal_selesai,
+    tanggal_berakhir,
   } = form.formState.errors;
 
   const tanggalMulai = form.watch("tanggal_mulai");
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    alert(JSON.stringify(data));
+  const { mutateAsync, isPending, isSuccess } = useCreateTautan();
+
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    await mutateAsync(data);
+    setIsOpenModal(isSuccess);
   }
 
   return (
-    <Dialog>
+    <Dialog open={openModal} onOpenChange={setIsOpenModal}>
       <DialogTrigger asChild>
         <Button variant="outline" className="text-black-07">
           <Plus width={16} height={16} className="mr-1" />
@@ -100,10 +107,10 @@ export const ModalAddTautan = () => {
           >
             <FormField
               control={form.control}
-              name="program"
+              name="program_id"
               render={({ field }) => (
                 <FormItem className="grid grid-cols-6 items-center gap-2">
-                  <FormLabel className="col-span-2" htmlFor="program">
+                  <FormLabel className="col-span-2" htmlFor="program_id">
                     Program
                   </FormLabel>
                   <Select
@@ -114,15 +121,15 @@ export const ModalAddTautan = () => {
                       <SelectTrigger
                         className={cn(
                           "col-span-4 rounded-lg",
-                          program && validationErrorClass,
+                          program_id && validationErrorClass,
                         )}
                       >
                         <SelectValue placeholder="Pilih program" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="sekolah">Sekolah</SelectItem>
-                      <SelectItem value="kerjasama">Kerjasama</SelectItem>
+                      <SelectItem value="1">Sekolah</SelectItem>
+                      <SelectItem value="2">Kerjasama</SelectItem>
                     </SelectContent>
                   </Select>
                   <span className="col-span-2" style={{ marginTop: 0 }}></span>
@@ -132,18 +139,18 @@ export const ModalAddTautan = () => {
             />
             <FormField
               control={form.control}
-              name="instansi"
+              name="nama_instansi"
               render={({ field }) => (
                 <FormItem className="grid grid-cols-6 items-center gap-2">
-                  <FormLabel className="col-span-2" htmlFor="instansi">
+                  <FormLabel className="col-span-2" htmlFor="nama_instansi">
                     Nama Instansi
                   </FormLabel>
                   <FormControl>
                     <Input
-                      id="instansi"
+                      id="nama_instansi"
                       className={cn(
                         "col-span-4 rounded-lg",
-                        instansi && validationErrorClass,
+                        nama_instansi && validationErrorClass,
                       )}
                       placeholder="Nama Instansi"
                       {...field}
@@ -228,18 +235,18 @@ export const ModalAddTautan = () => {
             />
             <FormField
               control={form.control}
-              name="nama_pic_pt"
+              name="nama_pic_instansi"
               render={({ field }) => (
                 <FormItem className="grid grid-cols-6 items-center gap-2">
-                  <FormLabel className="col-span-2" htmlFor="nama_pic_pt">
+                  <FormLabel className="col-span-2" htmlFor="nama_pic_instansi">
                     Nama PIC PT/Instansi
                   </FormLabel>
                   <FormControl>
                     <Input
-                      id="nama_pic_pt"
+                      id="nama_pic_instansi"
                       className={cn(
                         "col-span-4 rounded-lg",
-                        nama_pic_pt && validationErrorClass,
+                        nama_pic_instansi && validationErrorClass,
                       )}
                       placeholder="Nama PIC"
                       {...field}
@@ -305,7 +312,7 @@ export const ModalAddTautan = () => {
             />
             <FormField
               control={form.control}
-              name="tanggal_selesai"
+              name="tanggal_berakhir"
               render={({ field }) => (
                 <FormItem className="grid grid-cols-6 items-center gap-2">
                   <FormLabel className="col-span-2">Tanggal Selesai</FormLabel>
@@ -321,7 +328,7 @@ export const ModalAddTautan = () => {
                           className={cn(
                             "col-span-4 justify-start p-0 text-left font-normal",
                             !field.value && "text-muted-foreground",
-                            tanggal_selesai && validationErrorClass,
+                            tanggal_berakhir && validationErrorClass,
                           )}
                         >
                           <div className="mr-2 flex h-full items-center justify-center border-r px-2">
@@ -357,7 +364,7 @@ export const ModalAddTautan = () => {
               )}
             />
             <div className="mt-2 flex justify-center gap-8">
-              <DialogClose>
+              <DialogClose asChild>
                 <Button
                   type="button"
                   className="w-[200px] bg-red-07 hover:bg-red-07/85"
@@ -366,9 +373,19 @@ export const ModalAddTautan = () => {
                   Batal
                 </Button>
               </DialogClose>
-              <Button type="submit" className="w-[200px] bg-blue-05">
-                <SaveIcon />
-                Simpan
+              <Button
+                type="submit"
+                className="w-[200px] bg-blue-05"
+                disabled={isPending}
+              >
+                {isPending ? (
+                  <Spinner className="h-4 w-[150px]" />
+                ) : (
+                  <>
+                    <SaveIcon />
+                    Simpan
+                  </>
+                )}
               </Button>
             </div>
           </form>
