@@ -67,3 +67,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+.rdp-vhidden {
+  @apply hidden;
+}
+
+.rdp-caption_dropdowns {
+  @apply flex gap-3;
+}
