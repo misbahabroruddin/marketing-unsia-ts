@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useToast } from "@/components/ui/use-toast";
 import { useAxios } from "@/lib/hooks/use-axios";
-import { convertDateFormatForm } from "@/lib/utils/convert-date";
+import { convertDateTimeFormatForm } from "@/lib/utils/convert-date";
 
 export const useUpdateTautan = (tautanId: string | any) => {
   const axios = useAxios();
@@ -19,8 +19,8 @@ export const useUpdateTautan = (tautanId: string | any) => {
       alamat: form.alamat,
       nama_pic: form.nama_pic,
       nama_pic_instansi: form.nama_pic_instansi,
-      tanggal_mulai: convertDateFormatForm(form.tanggal_mulai),
-      tanggal_berakhir: convertDateFormatForm(form.tanggal_berakhir),
+      tanggal_mulai: convertDateTimeFormatForm(form.tanggal_mulai),
+      tanggal_berakhir: convertDateTimeFormatForm(form.tanggal_berakhir),
     };
     try {
       const { data } = await axios.put(`/tautans/${tautanId}`, reqBody, {

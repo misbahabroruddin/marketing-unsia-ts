@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { signOut } from "next-auth/react";
 
 import { useToast } from "@/components/ui/use-toast";
 import { useAxios } from "@/lib/hooks/use-axios";
@@ -10,8 +11,8 @@ export const useGetAllDataTautan = (queryParams?: QueryParamsTautan) => {
   const { toast } = useToast();
 
   let params: any = {
-    page: queryParams?.page,
-    limit: queryParams?.limit,
+    page: queryParams?.pageIndex,
+    limit: queryParams?.pageSize,
   };
 
   if (queryParams?.nama_kegiatan) {
@@ -63,10 +64,16 @@ export const useGetAllDataTautan = (queryParams?: QueryParamsTautan) => {
       });
       return data;
     } catch (error: any) {
-      toast({
-        description: "Internal Server Error",
-        variant: "destructive",
-      });
+      if (error.response.status === 401) {
+        signOut({ redirect: false }).then(() => {
+          window.location.href = "https://sso.dev-unsia.id/home";
+        });
+      } else if (error.response.status === 500) {
+        toast({
+          description: "Internal Server Error",
+          variant: "destructive",
+        });
+      }
     }
   };
 

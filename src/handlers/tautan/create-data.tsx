@@ -5,7 +5,7 @@ import { signOut } from "next-auth/react";
 
 import { useToast } from "@/components/ui/use-toast";
 import { useAxios } from "@/lib/hooks/use-axios";
-import { convertDateFormatForm } from "@/lib/utils/convert-date";
+import { convertDateTimeFormatForm } from "@/lib/utils/convert-date";
 
 export const useCreateTautan = () => {
   const axios = useAxios();
@@ -20,8 +20,8 @@ export const useCreateTautan = () => {
       alamat: form.alamat,
       nama_pic: form.nama_pic,
       nama_pic_instansi: form.nama_pic_instansi,
-      tanggal_mulai: convertDateFormatForm(form.tanggal_mulai),
-      tanggal_berakhir: convertDateFormatForm(form.tanggal_berakhir),
+      tanggal_mulai: convertDateTimeFormatForm(form.tanggal_mulai),
+      tanggal_berakhir: convertDateTimeFormatForm(form.tanggal_berakhir),
     };
     try {
       const { data } = await axios.post("/tautans", reqBody, {
@@ -55,7 +55,9 @@ export const useCreateTautan = () => {
           variant: "destructive",
         });
       } else if (error.response.status === 401) {
-        signOut();
+        signOut({ redirect: false }).then(() => {
+          window.location.href = "https://sso.dev-unsia.id/home";
+        });
       } else {
         toast({
           description: "Internal Server Error",
