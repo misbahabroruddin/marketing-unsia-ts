@@ -63,7 +63,7 @@ export default function TautanPage() {
         </div>
         <DataTable
           columns={columns}
-          data={dataTautan?.data?.data}
+          data={dataTautan?.data}
           total={dataTautan?.data?.total}
           pageCount={dataTautan?.data?.last_page}
           pagination={queryParams}
