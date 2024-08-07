@@ -31,8 +31,8 @@ export const QueryParamsTautanProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [queryParams, setQueryParams] = useState<QueryParamsTautan>({
-    page: 1,
-    limit: 10,
+    pageIndex: 1,
+    pageSize: 10,
     nama_kegiatan: "",
     sortby_program_id: null,
     sortby_nama_kegiatan: null,
@@ -40,12 +40,12 @@ export const QueryParamsTautanProvider: React.FC<{ children: ReactNode }> = ({
     sortby_tanggal_berakhir: null,
   });
 
-  const setPage = (page: number) =>
-    setQueryParams((prev) => ({ ...prev, page }));
-  const setLimit = (limit: number) =>
-    setQueryParams((prev) => ({ ...prev, limit }));
+  const setPage = (pageIndex: number) =>
+    setQueryParams((prev) => ({ ...prev, pageIndex }));
+  const setLimit = (pageSize: number) =>
+    setQueryParams((prev) => ({ ...prev, pageSize }));
   const setNamaKegiatan = (nama_kegiatan: string) =>
-    setQueryParams((prev) => ({ ...prev, nama_kegiatan }));
+    setQueryParams((prev) => ({ ...prev, nama_kegiatan, pageIndex: 0 }));
   const setSortbyProgramId = (
     sortby_program_id: "asc" | "desc" | string | null,
   ) => setQueryParams((prev) => ({ ...prev, sortby_program_id }));
