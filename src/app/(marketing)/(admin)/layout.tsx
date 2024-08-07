@@ -23,8 +23,10 @@ export default function AdminLayout({
           isSidebarExpand ? "ml-64" : "ml-[72px]",
         )}
       >
-        <BreadCrumb />
-        {children}
+        <div className="mt-16">
+          <BreadCrumb />
+          {children}
+        </div>
       </main>
     </>
   );
