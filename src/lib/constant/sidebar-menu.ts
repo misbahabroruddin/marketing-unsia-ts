@@ -29,6 +29,6 @@ export const sidebarMenu: SidebarMenu[] = [
     label: "Data Leads",
     icon: "/icons/peminat.svg",
     iconDark: "/icons/peminat-dark.svg",
-    link: "/peminat",
+    link: "/data-leads",
   },
 ];
