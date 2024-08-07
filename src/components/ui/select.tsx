@@ -148,21 +148,19 @@ SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
 const SelectWithIcon = ({
   icon,
-  className,
   selectPlaceholder,
-  children,
   options,
+  onValueChange,
 }: {
   icon: React.ReactNode;
   selectPlaceholder: string;
   options: SelectOption[];
-  className?: string;
-  children?: React.ReactNode;
+  onValueChange: (e: "asc" | "desc" | string | null) => void;
 }) => {
   return (
-    <Select onValueChange={(e) => console.log(e)}>
+    <Select onValueChange={onValueChange}>
       <SelectTrigger>
-        <div className="flex items-center gap-1">
+        <div className="flex w-[110px] items-center gap-1">
           {icon}
           <SelectValue
             placeholder={selectPlaceholder}
