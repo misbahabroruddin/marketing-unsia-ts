@@ -182,8 +182,8 @@ export const useColumnTable = () => {
       header: () => <div className="text-center">Action</div>,
       cell: ({ row }) => (
         <div className="flex items-center justify-center gap-1">
-          <ModalDetailTautan tautanId={row.original.id} isDetail={false} />
           <ModalDetailTautan tautanId={row.original.id} />
+          <ModalDetailTautan tautanId={row.original.id} isDetail />
           <button
             onClick={() => {
               toast({

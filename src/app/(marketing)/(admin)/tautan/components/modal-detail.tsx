@@ -3,7 +3,6 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { useEffect, useState } from "react";
 
@@ -54,7 +53,7 @@ import { convertDate } from "@/lib/utils/convert-date";
 
 export const ModalDetailTautan = ({
   tautanId,
-  isDetail = true,
+  isDetail = false,
 }: {
   tautanId: string;
   isDetail?: boolean;
