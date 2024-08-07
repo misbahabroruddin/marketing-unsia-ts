@@ -9,6 +9,7 @@ import {
   FieldPath,
   FieldValues,
   FormProvider,
+  UseFormProps,
   useFormContext,
 } from "react-hook-form";
 
@@ -167,6 +168,41 @@ const FormMessage = React.forwardRef<
   );
 });
 FormMessage.displayName = "FormMessage";
+
+// const FormController = ({
+//   name,
+//   control,
+//   label,
+//   placeholder,
+//   input,
+//   errorState,
+// }: {
+//   name: string;
+//   control: any;
+//   input: React.Component;
+//   label: string;
+//   errorState: any;
+//   placeholder: string;
+// }) => {
+//   return (
+//     <FormField
+//       control={control}
+//       name={name}
+//       render={({ field }) => (
+//         <FormItem className="grid grid-cols-6 items-center gap-2">
+//           <FormLabel className="col-span-2" htmlFor={name}>
+//             Nama Lengkap
+//           </FormLabel>
+//           <FormControl>
+//             <input />
+//           </FormControl>
+//           <span className="col-span-2" style={{ marginTop: 0 }}></span>
+//           <FormMessage className="col-span-4 mt-0" />
+//         </FormItem>
+//       )}
+//     />
+//   );
+// };
 
 export {
   useFormField,
