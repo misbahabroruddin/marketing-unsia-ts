@@ -49,7 +49,7 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
-    data: data ? data : [],
+    data: data?.data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -67,6 +67,7 @@ export function DataTable<TData, TValue>({
 
   const handlePageChange = (e: PageChangeEvent) => {
     table.setPageIndex(e.selected);
+    setPagination(e.selected);
   };
 
   return (
@@ -103,17 +104,20 @@ export function DataTable<TData, TValue>({
             {isLoading ? (
               Array.from({ length: columns.length }).map((_, index) => (
                 <TableRow key={index}>
-                  {columns.map((item) => (
-                    <TableCell key={item.id} className="h-4 text-center">
+                  {columns.map((item, index) => (
+                    <TableCell
+                      key={`${item.id}-${index + 1}`}
+                      className="h-4 text-center"
+                    >
                       <Skeleton className="h-5 w-full" />
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows.map((row, index) => (
                 <TableRow
-                  key={row.id}
+                  key={`${row.id}-${index}`}
                   data-state={row.getIsSelected() && "selected"}
                   className="even:bg-[#F4F3FF]"
                 >
@@ -141,7 +145,7 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <div className="mt-2 flex items-center justify-between">
-        {data.length ? (
+        {data?.data?.length ? (
           <>
             <div className="flex gap-2 text-primary">
               <p>Data</p>
